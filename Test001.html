@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        /* 全局重置，消除默认边距，让背景铺满全屏 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            /* 更好的移动端视口适配 */
+        }
+
+        body {
+            background-color: #D7E8CD;
+            /* 默认背景色 */
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            transition: background-image 0.8s ease;
+            /* 轻微的切换过渡 */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
+</head>
+<body>
+    <!-- 页面上没有任何 div 或其他可见内容，只有背景切换脚本 -->
+    <script src="image-list.js"></script>
+    <script>
+        (function() {
+            // =====================================================
+            // 📁 请将您的背景图片放入同目录下的 backgroundImages 文件夹
+            //    然后在下方数组中修改为实际文件名
+            //    支持 .jpg / .jpeg / .png / .webp 等常见格式
+            // =====================================================
+            // const IMAGE_FILES = [];
+
+            const IMAGE_DIR = './backgroundImages/';
+            const SWITCH_INTERVAL = 10000; // 10 秒
+
+            let lastIndex = -1; // 避免连续出现同一张图片
+
+            // 预加载所有背景图片，减少切换时的加载延迟
+            IMAGE_FILES.forEach(function(filename) {
+                var img = new Image();
+                img.src = IMAGE_DIR + filename;
+            });
+
+            // 随机获取一张与上次不同的背景图片索引
+            function getRandomIndex() {
+                if (IMAGE_FILES.length === 0) return -1;
+                if (IMAGE_FILES.length === 1) return 0;
+
+                var newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * IMAGE_FILES.length);
+                } while (newIndex === lastIndex);
+                return newIndex;
+            }
+
+            // 应用随机背景图片
+            function applyRandomBackground() {
+                var index = getRandomIndex();
+                if (index === -1) return;
+
+                lastIndex = index;
+                var imageUrl = IMAGE_DIR + IMAGE_FILES[index];
+                document.body.style.backgroundImage = 'url("' + imageUrl + '")';
+            }
+
+            // 页面加载后立即应用第一张背景
+            applyRandomBackground();
+
+            // 每隔 5 秒切换一次
+            setInterval(applyRandomBackground, SWITCH_INTERVAL);
+        })();
+    </script>
+</body>
+</html>
